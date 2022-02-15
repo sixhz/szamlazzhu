@@ -220,9 +220,15 @@ func (a *Agent) GenerateReceipt(req Xmlnyugtacreate) (Xmlnyugtavalasz, error) {
 	return rpl, nil
 }
 
-// StornoReceipt reverses an existing receipt
-// https://docs.szamlazz.hu/#reversing-a-receipt-storno
+// StornoReceipt is an alias of ReverseReceipt for compatibility reasons.
+// Deprecated!
 func (a *Agent) StornoReceipt(req Xmlnyugtast) (Xmlnyugtavalasz, error) {
+	return a.ReverseReceipt(req)
+}
+
+// ReverseReceipt reverses an existing receipt
+// https://docs.szamlazz.hu/#reversing-a-receipt-storno
+func (a *Agent) ReverseReceipt(req Xmlnyugtast) (Xmlnyugtavalasz, error) {
 
 	// hardcoded fields
 	req.Felhasznalo = a.username
