@@ -25,18 +25,24 @@ type Xmlszamla struct {
 	Jelszo           string `xml:"beallitasok>jelszo,omitempty"`
 	SzamlaAgentKulcs string `xml:"beallitasok>szamlaagentkulcs,omitempty"`
 
-	ESzamla          bool   `xml:"beallitasok>eszamla"`                    // Whether to issue electronically signed invoices
-	KulcstartoJelszo string `xml:"beallitasok>kulcstartojelszo,omitempty"` // Password for electronic signature keyring
-	SzamlaLetoltes   bool   `xml:"beallitasok>szamlaLetoltes"`             // Whether to return the created invoice image
-	ValaszVerzio     uint   `xml:"beallitasok>valaszVerzio"`               // Format of reply. 1: mixed 2: xml-encapsulated
+	ESzamla           bool `xml:"beallitasok>eszamla"`                     // Whether to issue electronically signed invoices
+	SzamlaLetoltes    bool `xml:"beallitasok>szamlaLetoltes"`              // Whether to return the created invoice image
+	SzamlaLetoltesPld int  `xml:"beallitasok>szamlaLetoltesPld,omitempty"` // Number of copies to download
+
+	ValaszVerzio uint `xml:"beallitasok>valaszVerzio"` // Format of reply. 1: mixed 2: xml-encapsulated
+
+	Aggregator      string `xml:"beallitasok>aggregator,omitempty"` // Webshop or aggregator type (undocumented)
+	Guardian        bool   `xml:"beallitasok>guardian,omitempty"`
+	Cikkazoninvoice bool   `xml:"beallitasok>cikkazoninvoice,omitempty"` // Display item identifiers on invoice (undocumented)
+	SzamlaKulsoAzon string `xml:"beallitasok>szamlaKulsoAzon,omitempty"` // External reference for query-back
 
 	KeltDatum              Date    `xml:"fejlec>keltDatum,omitempty"`              // Date of creation (YYYY-MM-DD)
 	TeljesitesDatum        Date    `xml:"fejlec>teljesitesDatum"`                  // Date of fullfillment (YYYY-MM-DD)
 	FizetesiHataridoDatum  Date    `xml:"fejlec>fizetesiHataridoDatum"`            // Payment deadline (YYYY-MM-DD)
 	FizMod                 string  `xml:"fejlec>fizmod"`                           // Payment type
 	Penznem                string  `xml:"fejlec>penznem"`                          // Currency
-	SzamlaNyelve           string  `xml:"fejlec>szamlaNyelve"`                     // Language (hu/de/en/it/fr/ro/sk/hr)
-	Megjegyzes             string  `xml:"fejlec>megjegyzes"`                       // Comment
+	SzamlaNyelve           string  `xml:"fejlec>szamlaNyelve"`                     // Language (hu/en/de/it/ro/sk/hr)
+	Megjegyzes             string  `xml:"fejlec>megjegyzes,omitempty"`             // Comment
 	ArfolyamBank           string  `xml:"fejlec>arfolyamBank,omitempty"`           // Bank of exchange (MNB)
 	Arfolyam               float64 `xml:"fejlec>arfolyam,omitempty"`               // Exchange rate (0.0)
 	RendelesSzam           string  `xml:"fejlec>rendelesSzam"`                     // Order number
@@ -47,16 +53,21 @@ type Xmlszamla struct {
 	HelyesbitettSzamlaszam bool    `xml:"fejlec>helyesbitettSzamlaszam,omitempty"` // No of invoice corrected
 	Dijbekero              bool    `xml:"fejlec>dijbekero,omitempty"`              // Is proforma invoice?
 	Szallitolevel          bool    `xml:"fejlec>szallitolevel,omitempty"`          // Is delivery bill?
+	LogoExtra              string  `xml:"fejlec>logoExtra,omitempty"`              // Extra information for logo selection (undocumented)
 	SzamlaszamElotag       string  `xml:"fejlec>szamlaszamElotag,omitempty"`       // Invoice ID prefix
-	Fizetve                bool    `xml:"fejlec>fizetve"`                          // Invoice has been paid?
+	FizetendoKorrekcio     float64 `xml:"fejlec>fizetendoKorrekcio,omitempty"`     // Correction of total typically due to rounding of cash (undocumented)
+	Fizetve                bool    `xml:"fejlec>fizetve,omitempty"`                // Invoice has been paid?
+	ArresAfa               bool    `xml:"fejlec>arresAfa,omitempty"`               // VAT calculation based on margin
+	EUsAfa                 bool    `xml:"fejlec>eusAfa,omitempty"`                 // Indicate no no hungarian VAT on the receipt. Data disclosure towards NTCAs Online Invoice System is not needed.
 	SzamlaSablon           string  `xml:"fejlec>szamlaSablon,omitempty"`           // Invoice format (SzlaMost/SzlaAlap/SzlaNoEnv/Szla8cm/SzlaTomb)
-	Elonezetpdf            bool    `xml:"fejlec>elonezetpdf,omitempty"`            // Invoice format (SzlaMost/SzlaAlap/SzlaNoEnv/Szla8cm/SzlaTomb)
+	Elonezetpdf            bool    `xml:"fejlec>elonezetpdf,omitempty"`            // Generate preview PDF instead of issuance?
 
 	Bank           string `xml:"elado>bank,omitempty"`           // Merchant Bank Name
 	BankszamlaSzam string `xml:"elado>bankszamlaszam,omitempty"` // Merchant Bank Account
 	EmailReplyTo   string `xml:"elado>emailReplyto,omitempty"`   // Reply-to header for notification e-mails
 	EmailTargy     string `xml:"elado>emailTargy,omitempty"`     // Subject header for notification e-mails
 	EmailSzoveg    string `xml:"elado>emailSzoveg,omitempty"`    // Content text of notification e-mails
+	AlairoNeve     string `xml:"elado>alairoNeve,omitempty"`     // Name of signer at seller (undocumented)
 
 	VevoNev                string `xml:"vevo>nev"`                          // Customer name
 	VevoOrszag             string `xml:"vevo>orszag,omitempty"`             // Customer country
@@ -65,6 +76,7 @@ type Xmlszamla struct {
 	VevoCim                string `xml:"vevo>cim"`                          // Customer address line
 	VevoEmail              string `xml:"vevo>email,omitempty"`              // Customer e-mail address
 	VevoSendEmail          bool   `xml:"vevo>sendEmail,omitempty"`          // Send notification e-mail to customer?
+	VevoAdoalany           int    `xml:"vevo>adoalany,omitempty"`           // Customer VAT status 7:business is based outside of the European Union, 6:business is based in the Europen Union, 1: has a hungarian tax number, 0: we don't know, if the buyer has a tax number, -1: no tax number
 	VevoAdoszam            string `xml:"vevo>adoszam,omitempty"`            // Customer VAT number
 	VevoAdoszamEU          string `xml:"vevo>adoszamEU,omitempty"`          // Customer VAT number
 	VevoPostazasiNev       string `xml:"vevo>postazasiNev,omitempty"`       // Customer mail name
@@ -73,8 +85,21 @@ type Xmlszamla struct {
 	VevoPostazasiTelepules string `xml:"vevo>postazasiTelepules,omitempty"` // Customer mail address city
 	VevoPostazasiCim       string `xml:"vevo>postazasiCim,omitempty"`       // Customer mail address line
 	VevoAzonosito          string `xml:"vevo>azonosito,omitempty"`          // Customer unique ID
-	VevoTelefonszam        string `xml:"vevo>telefonszam,omitempty"`        // Customer phone number
-	VevoMegjegyzes         string `xml:"vevo>megjegyzes,omitempty"`         // Customer comment
+
+	VevoFokonyvKonyvelesDatum Date   `xml:"vevo>vevoFokonyv>konyvelesDatum,omitempty"`
+	VevoFokonyvVevoAzonosito  string `xml:"vevo>vevoFokonyv>vevoAzonosito,omitempty"`
+	VevoFokonyvFokonyviSzam   string `xml:"vevo>vevoFokonyv>vevoFokonyviSzam,omitempty"`
+	VevoFokonyvFolyamatostelj bool   `xml:"vevo>vevoFokonyv>folyamatosTelj,omitempty"`
+	VevoFokonyvElszDatumTol   Date   `xml:"vevo>vevoFokonyv>elszDatumTol,omitempty"`
+	VevoFokonyvElszDatumIg    Date   `xml:"vevo>vevoFokonyv>elszDatumIg,omitempty"`
+
+	VevoAlairoNeve  string `xml:"vevo>alairoNeve,omitempty"`  // Name of signer at customer (undocumented)
+	VevoTelefonszam string `xml:"vevo>telefonszam,omitempty"` // Customer phone number
+	VevoMegjegyzes  string `xml:"vevo>megjegyzes,omitempty"`  // Customer comment
+
+	// Note: provider-specific consigment options are not supported by the Go binding yet
+	FuvarlevelVonalkod   string `xml:"fuvarlevel>vonalkod,omitempty"`   // Generic barcode of consigment
+	FuvarlevelMegjegyzes string `xml:"fuvarlevel>megjegyzes,omitempty"` // Generic comment of consigment
 
 	Tetelek []XmlszamlaTetel `xml:"tetelek>tetel"` // Invoice content
 }
@@ -87,6 +112,7 @@ type XmlszamlaTetel struct {
 	MennyisegiEgyseg string  `xml:"mennyisegiEgyseg"`     // Quantity specifier
 	NettoEgysegar    float64 `xml:"nettoEgysegar"`        // Net unit value
 	AfaKulcs         string  `xml:"afakulcs"`             // VAT base (TAM/AAM/EU/EUK/MAA/F.AFA/K.AFA/0/5/7/18/19/20/25/27)
+	ArresAfaAlap     float64 `xml:"arresAfaAlap"`         // Margin-based VAT base
 	NettoErtek       float64 `xml:"nettoErtek"`           // Net value
 	AfaErtek         float64 `xml:"afaErtek"`             // VAT value
 	BruttoErtek      float64 `xml:"bruttoErtek"`          // Gross value
@@ -173,8 +199,9 @@ type Xmlszamlapdf struct {
 	Jelszo           string `xml:"jelszo,omitempty"`
 	SzamlaAgentKulcs string `xml:"szamlaagentkulcs,omitempty"`
 
-	Szamlaszam   string `xml:"szamlaszam,omitempty"`   // Id of document to be downloaded
-	RendelesSzam string `xml:"rendelesSzam,omitempty"` // Order number
+	Szamlaszam      string `xml:"szamlaszam,omitempty"`      // Id of document to be downloaded
+	RendelesSzam    string `xml:"rendelesSzam,omitempty"`    // Order number (undocumented)
+	SzamlaKulsoAzon string `xml:"szamlaKulsoAzon,omitempty"` // External reference for query-back
 
 	ValaszVerzio uint `xml:"valaszVerzio"` // Format of reply. 1: mixed 2: xml-encapsulated
 }
